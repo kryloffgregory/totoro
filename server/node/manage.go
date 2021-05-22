@@ -29,6 +29,11 @@ func GetAffectedForNodeUpdate(libName string) ([]string,error) {
 }
 
 func GetAffectedForNodeDelete(libName string) ([]string, error) {
+	node, err:=GetNode(libName)
+	if err!=nil {
+		return nil, err
+	}
 
+	return node.CriticalFor, nil
 }
 

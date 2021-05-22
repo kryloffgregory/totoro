@@ -3,11 +3,10 @@ package main
 import (
 	"log"
 	"net/rpc"
+	"os"
 	"os/user"
 
 	"accessModel/server/api"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 
@@ -20,11 +19,17 @@ func main() {
 	if err!=nil {
 		log.Fatal(err)
 	}
-	spew.Dump(usr)
-
+	args:=os.Args[1:]
+	switch args[0] {
+	case "install":
+		lib:=args[1]
+		version:=""
+		if len(args) >= 2{
+			version = args[2]
+		}
 		req:=&api.InstallParams{
-			Package: "cowsay",
-			Version: "",
+			Package: lib,
+			Version: version,
 			User:    usr.Uid,
 		}
 		repl:=&api.InstallReply{}
@@ -33,4 +38,19 @@ func main() {
 			log.Fatal(err)
 		}
 		log.Printf("Reply: %v", repl)
+	case "remove":
+		lib:=args[1]
+		req:=&api.RemoveParams{
+			Package: lib,
+			User:    usr.Uid,
+		}
+		repl:=&api.RemoveReply{}
+		err = client.Call("Listener.Remove", req, repl)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Printf("Reply: %v", repl)
+
+	}
+
 }

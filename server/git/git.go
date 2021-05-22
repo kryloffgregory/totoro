@@ -29,7 +29,7 @@ func init() {
 	client = github.NewClient(tc)
 }
 
-func CreatePR(user string, command string, reviewers []string) {
+func CreatePR(user string, command string, reviewers []string) string {
 	ctx := context.Background()
 	branch:="branch"+fmt.Sprint(time.Now().UnixNano())
 
@@ -50,9 +50,12 @@ func CreatePR(user string, command string, reviewers []string) {
 		log.Fatalf("Unable to create the commit: %s\n", err)
 	}
 
-	if err := createPR1(ctx, client, user, command, reviewers, branch); err != nil {
+	url, err := createPR1(ctx, client, user, command, reviewers, branch)
+	if err!=nil {
 		log.Fatalf("Error while creating the pull request: %s", err)
 	}
+
+	return url
 
 }
 
@@ -110,7 +113,7 @@ func pushCommit(ctx context.Context, client *github.Client, ref *github.Referenc
 	return err
 }
 
-func createPR1(ctx context.Context, client *github.Client, user string, command string, reviewers []string, branch string) (err error) {
+func createPR1(ctx context.Context, client *github.Client, user string, command string, reviewers []string, branch string) (url string, err error) {
 	newPR := &github.NewPullRequest{
 		Title:               github.String("Request from " + user),
 		Head:                github.String(owner+":"+branch),
@@ -120,7 +123,7 @@ func createPR1(ctx context.Context, client *github.Client, user string, command 
 
 	pr, _, err := client.PullRequests.Create(ctx, owner, repo, newPR)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	fmt.Printf("PR created: %s\n", pr.GetHTMLURL())
@@ -130,8 +133,10 @@ func createPR1(ctx context.Context, client *github.Client, user string, command 
 		Reviewers:     reviewers,
 	}
 	pr, _, err = client.PullRequests.RequestReviewers(ctx, owner, repo, *pr.Number,revReq)
-
-	return nil
+	if err!=nil {
+		return "", err
+	}
+	return pr.GetHTMLURL(), err
 }
 
 func ProcessPRs() error {

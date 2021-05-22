@@ -3,8 +3,8 @@ package api
 import (
 	"fmt"
 
-	"accessModel/server/execute"
-	"accessModel/server/issue"
+	"accessModel/server/git"
+	"accessModel/server/node"
 )
 
 type Listener int
@@ -28,29 +28,36 @@ type RemoveParams struct {
 	User string
 }
 
+type InterestParams struct {
+	Package string
+	User string
+}
+
+type InterestReply struct {
+	State string
+
+}
 
 func(l *Listener) Install(params *InstallParams, reply *InstallReply) error {
 	fmt.Printf("Install request: %v", params)
-	output, _ :=execute.Execute(issue.Command{
-		Type:           issue.CommandTypeInstall,
-		InstallPayload: &issue.InstallPayload{
-			PackageName: params.Package,
-			Version:     params.Version,
-		},
-	})
-	reply.State = string(output)
+
+	url:=git.CreatePR("vasya2048", "apt -y install --no-upgrade "+params.Package, []string{"kryloffgregory"})
+	reply.State = url
 	return nil
 }
 
 func (l *Listener) Remove(params *RemoveParams, reply *RemoveReply) error {
 	fmt.Printf("Remove request: %v", params)
-	execute.Execute(issue.Command{
-		Type:           issue.CommandTypeRemove,
-		RemovePayload:&issue.RemovePayload{
-			PackageName:params.Package,
-		},
-	})
-	reply = &RemoveReply{State:"34"}
+
+	url:=git.CreatePR("vasya2048", "apt -y remove --purge" + params.Package, []string{"kryloffgregory"})
+	reply.State = url
+	return nil
+}
+
+func (l *Listener) Interest(params *InterestParams, reply *InterestReply) error {
+	fmt.Printf("Interest request: %v", params)
+
+	node.AddAffected(params.Package, params.User)
 	return nil
 }
 
