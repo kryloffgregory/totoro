@@ -61,6 +61,7 @@ func (l *Listener) Install(params *InstallParams, reply *InstallReply) error {
 		return err
 	}
 
+
 	url := git.CreatePR("vasya2048", "apt -y install --no-upgrade "+params.Package, affected)
 	reply.State = url
 	return nil
@@ -69,7 +70,7 @@ func (l *Listener) Install(params *InstallParams, reply *InstallReply) error {
 func (l *Listener) Remove(params *RemoveParams, reply *RemoveReply) error {
 	log.Printf("Remove request: %v", params)
 
-	affected, err := l.nodeManager.GetAffectedForNodeUpdate(params.Package)
+	affected, err := l.nodeManager.GetAffectedForNodeDelete(params.Package)
 	if err != nil {
 		return err
 	}
