@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"testing"
 
-	"accessModel/server/node"
+
 
 	"github.com/google/uuid"
+	"github.com/kryloffgregory/totoro/server/node"
 	"github.com/stretchr/testify/assert"
 )
 

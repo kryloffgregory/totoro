@@ -33,7 +33,7 @@ func main() {
 			if err:=git.ProcessPRs(); err!=nil {
 				log.Println(fmt.Sprintf("Error occured while processing prs: %v", err))
 			}
-			time.Sleep(time.Second)
+			time.Sleep(time.Second*10)
 		}
 	}()
 
