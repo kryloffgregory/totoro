@@ -8,6 +8,7 @@ import (
 
 
 	"github.com/google/go-github/github"
+	"github.com/kryloffgregory/totoro/server/config"
 	"github.com/kryloffgregory/totoro/server/execute"
 	"golang.org/x/oauth2"
 )
@@ -22,8 +23,12 @@ var client *github.Client
 
 func init() {
 	ctx := context.Background()
+	token,err:=config.GetGithubToken()
+	if err!=nil {
+		log.Fatal(err)
+	}
 	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: token3},
+		&oauth2.Token{AccessToken: token},
 	)
 	tc := oauth2.NewClient(ctx, ts)
 

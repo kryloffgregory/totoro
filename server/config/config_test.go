@@ -8,7 +8,7 @@ import (
 )
 
 func TestConfig (t *testing.T) {
-	conf, err:=GetConfig()
+	conf, err:= GetUserMapping()
 	assert.NoError(t, err)
 	fmt.Println(conf)
 }
