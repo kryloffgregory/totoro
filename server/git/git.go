@@ -15,7 +15,7 @@ import (
 const owner = "kryloffgregory"
 const token = "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"
 const token2 = "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"
-const token3 = "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"
+const token3 = "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"
 const repo = "apt-server"
 
 var client *github.Client
@@ -140,7 +140,7 @@ func createPR1(ctx context.Context, client *github.Client, user string, command 
 	return pr.GetHTMLURL(), err
 }
 
-func ProcessPRs() error {
+func ProcessPRs(shutdown chan bool, done chan bool) error {
 	ctx := context.Background()
 	
 	opts:=&github.PullRequestListOptions{
@@ -152,9 +152,14 @@ func ProcessPRs() error {
 		return err
 	}
 	for _, pr:=range prs {
-		err:=ProcessPR(ctx, pr)
-		if err!=nil {
-			log.Println(fmt.Sprintf("Error occured while processing pr %v: %v", *pr.Body, err))
+		select {
+		case <-shutdown:
+			done <-true
+		default:
+			err:=ProcessPR(ctx, pr)
+			if err!=nil {
+				log.Println(fmt.Sprintf("Error occured while processing pr %v: %v", *pr.Body, err))
+			}
 		}
 	}
 
@@ -177,10 +182,9 @@ func ProcessPR(ctx context.Context, pr *github.PullRequest) error{
 	}
 
 	if reviewsLeft > 0 {
-		fmt.Println("KEK")
+		log.Println(fmt.Sprintf("Skipping pr %v", pr.GetHTMLURL()))
 		return nil
 	}
-
 
 	result, err:=execute.ExecuteString(*pr.Body)
 	if err!=nil {
@@ -202,6 +206,8 @@ func ProcessPR(ctx context.Context, pr *github.PullRequest) error{
 	if err!=nil {
 		return err
 	}
+
+	log.Println(fmt.Sprintf("Merged pr %v", pr.GetHTMLURL()))
 
 	return nil
 }
