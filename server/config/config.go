@@ -32,10 +32,5 @@ func GetGithubToken() (string, error){
 		return "", err
 	}
 
-	result :=""
-	err = json.Unmarshal(bytes, &result)
-	if err!=nil {
-		return "", err
-	}
-	return result, err
+	return string(bytes), err
 }
