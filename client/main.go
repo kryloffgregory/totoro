@@ -11,7 +11,7 @@ import (
 
 
 func main() {
-	client, err := rpc.Dial("unix", "/tmp/totoro")
+	client, err := rpc.Dial("unix", "/tmp/totoro/sock")
 	if err != nil {
 		log.Fatal(err)
 	}
