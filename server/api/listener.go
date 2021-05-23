@@ -3,8 +3,8 @@ package api
 import (
 	"fmt"
 
-	"accessModel/server/git"
-	"accessModel/server/node"
+	"github.com/kryloffgregory/totoro/server/git"
+	"github.com/kryloffgregory/totoro/server/node"
 )
 
 type Listener int

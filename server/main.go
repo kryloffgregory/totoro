@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	"accessModel/server/api"
-	"accessModel/server/git"
+	"github.com/kryloffgregory/totoro/server/api"
+	"github.com/kryloffgregory/totoro/server/git"
 )
 
 func main() {
@@ -17,6 +17,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	err=os.Chmod("/tmp/totoro", 0777)
 	if err!=nil{
 		log.Fatal(err)
@@ -37,4 +38,5 @@ func main() {
 	}()
 
 	rpc.Accept(l)
+
 }

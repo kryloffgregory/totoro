@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/user"
 
-	"accessModel/server/api"
+	"github.com/kryloffgregory/totoro/server/api"
 )
 
 
@@ -24,7 +24,7 @@ func main() {
 	case "install":
 		lib:=args[1]
 		version:=""
-		if len(args) >= 2{
+		if len(args) >= 3{
 			version = args[2]
 		}
 		req:=&api.InstallParams{

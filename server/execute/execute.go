@@ -5,7 +5,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"accessModel/server/issue"
+	"github.com/kryloffgregory/totoro/server/issue"
 )
 
 func Execute(command issue.Command) ([]byte, error) {

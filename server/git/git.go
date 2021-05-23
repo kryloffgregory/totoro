@@ -6,15 +6,16 @@ import (
 	"log"
 	"time"
 
-	"accessModel/server/execute"
 
 	"github.com/google/go-github/github"
+	"github.com/kryloffgregory/totoro/server/execute"
 	"golang.org/x/oauth2"
 )
 
 const owner = "kryloffgregory"
 const token = "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"
 const token2 = "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"
+const token3 = "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"
 const repo = "apt-server"
 
 var client *github.Client
@@ -22,7 +23,7 @@ var client *github.Client
 func init() {
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: token2},
+		&oauth2.Token{AccessToken: token3},
 	)
 	tc := oauth2.NewClient(ctx, ts)
 
@@ -74,7 +75,7 @@ func getRef(ctx context.Context, client *github.Client, branch string) (ref *git
 }
 
 func getTree(ctx context.Context, client *github.Client, ref *github.Reference, command string) (tree *github.Tree, err error) {
-	github.RepositoriesService.GetContents()
+	//github.RepositoriesService.GetContents()
 	// Create a tree with what to commit.
 	entries := []*github.TreeEntry{
 		{
@@ -161,13 +162,14 @@ func ProcessPRs() error {
 }
 
 func ProcessPR(ctx context.Context, pr *github.PullRequest) error{
-	//log.Println(fmt.Sprintf("Processing pr %v", pr))
+	log.Println(fmt.Sprintf("Processing pr %v", pr.GetHTMLURL()))
 	reviews, _,  err:=client.PullRequests.ListReviews(ctx, owner, repo, *pr.Number, nil)
 	if err!=nil {
 		return err
 	}
 
 	reviewsLeft:=len(pr.RequestedReviewers)
+	fmt.Println(reviewsLeft)
 	for _, review:=range reviews {
 		if *review.State == "APPROVED" {
 			reviewsLeft--
