@@ -8,12 +8,16 @@ import (
 	"github.com/boltdb/bolt"
 )
 
-var db *bolt.DB
-var bucket = "nodes"
+const bucket = "nodes"
 
-func init() {
+type dao struct {
+	 db *bolt.DB
+}
+
+
+func NewDAO() *dao{
 	var err error
-	db, err = bolt.Open("./db", 0600, &bolt.Options{Timeout: 1 * time.Second})
+	db, err := bolt.Open("./db", 0600, &bolt.Options{Timeout: 1 * time.Second})
 	if err!=nil {
 		log.Fatal(err)
 	}
@@ -24,10 +28,14 @@ func init() {
 	}); err!=nil {
 		log.Fatal(err)
 	}
+
+	return &dao{
+		db: db,
+	}
 }
 
-func UpsertNode(node *Node) error {
-	return db.Update(func(tx *bolt.Tx) error {
+func (dao *dao)UpsertNode(node *Node) error {
+	return dao.db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(bucket))
 		jsonNode,err:=json.Marshal(node)
 		if err!=nil {
@@ -37,9 +45,9 @@ func UpsertNode(node *Node) error {
 	})
 }
 
-func GetNode(pack string) (*Node, error) {
+func (dao *dao)GetNode(pack string) (*Node, error) {
 	node:= &Node{}
-	if err:=db.View(func(tx *bolt.Tx) error {
+	if err:=dao.db.View(func(tx *bolt.Tx) error {
 		b:= tx.Bucket([]byte(bucket))
 		v := b.Get([]byte(pack))
 		return json.Unmarshal(v, node)
@@ -50,8 +58,8 @@ func GetNode(pack string) (*Node, error) {
 	return node, nil
 }
 
-func DeleteNode(pack string) error {
-	return db.Update(func(tx *bolt.Tx) error {
+func (dao *dao)DeleteNode(pack string) error {
+	return dao.db.Update(func(tx *bolt.Tx) error {
 		b:= tx.Bucket([]byte(bucket))
 		return b.Delete([]byte(pack))
 	})

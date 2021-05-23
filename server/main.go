@@ -12,18 +12,24 @@ import (
 	"github.com/kryloffgregory/totoro/server/git"
 )
 
+const socketAddr = "/tmp/totoro/sock"
+
 func main() {
-	l, err := net.Listen("unix", "/tmp/totoro")
+	if err:=os.Remove(socketAddr); err!=nil && !os.IsExist(err) {
+		log.Fatal(err)
+	}
+
+	l, err := net.Listen("unix", socketAddr)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err=os.Chmod("/tmp/totoro", 0777)
+	err=os.Chmod(socketAddr, 0777)
 	if err!=nil{
 		log.Fatal(err)
 	}
 
-	err=rpc.Register(new(api.Listener))
+	err=rpc.Register(api.NewListener())
 	if err!=nil {
 		log.Fatal(err)
 	}

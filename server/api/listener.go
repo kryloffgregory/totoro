@@ -7,7 +7,14 @@ import (
 	"github.com/kryloffgregory/totoro/server/node"
 )
 
-type Listener int
+type Listener struct {
+	nodeManager *node.Manager
+}
+
+func NewListener() *Listener {
+	return &Listener{nodeManager:node.NewManager()}
+}
+
 type InstallReply struct {
 	State string
 }
@@ -57,7 +64,7 @@ func (l *Listener) Remove(params *RemoveParams, reply *RemoveReply) error {
 func (l *Listener) Interest(params *InterestParams, reply *InterestReply) error {
 	fmt.Printf("Interest request: %v", params)
 
-	node.AddAffected(params.Package, params.User)
+	l.nodeManager.AddAffected(params.Package, params.User)
 	return nil
 }
 
