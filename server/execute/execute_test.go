@@ -8,7 +8,7 @@ import (
 )
 
 func TestExecuteString(t *testing.T) {
-	res, err:=ExecuteString("brew info go")
+	res, err := ExecuteString("brew info go")
 	assert.NoError(t, err)
 	fmt.Println(res)
 }

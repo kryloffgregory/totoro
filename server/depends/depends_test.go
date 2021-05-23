@@ -8,7 +8,7 @@ import (
 )
 
 func TestGetRDepends(t *testing.T) {
-	rdeps,err:=GetRDepends("cowsay")
+	rdeps, err := GetRDepends("cowsay")
 	assert.NoError(t, err)
 
 	fmt.Println(rdeps)

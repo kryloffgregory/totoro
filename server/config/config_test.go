@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestConfig (t *testing.T) {
-	conf, err:= GetUserMapping()
+func TestConfig(t *testing.T) {
+	conf, err := GetUserMapping()
 	assert.NoError(t, err)
 	fmt.Println(conf)
 }
