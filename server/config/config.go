@@ -3,6 +3,7 @@ package config
 import (
 	"encoding/json"
 	"io/ioutil"
+	"strings"
 )
 
 const mappingFile = "/etc/totoro/user_mapping.json"
@@ -32,5 +33,5 @@ func GetGithubToken() (string, error){
 		return "", err
 	}
 
-	return string(bytes), err
+	return strings.TrimRight(string(bytes), "\n"), err
 }
