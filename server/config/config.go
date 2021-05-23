@@ -2,7 +2,7 @@ package config
 
 import (
 	"encoding/json"
-	"os"
+	"io/ioutil"
 )
 
 const mappingFile = "/etc/totoro/user_mapping.json"
@@ -13,7 +13,7 @@ type UserMappingConfig struct {
 }
 
 func GetUserMapping()  (*UserMappingConfig, error) {
-	bytes, err:=os.ReadFile(mappingFile)
+	bytes, err:=ioutil.ReadFile(mappingFile)
 	if err!=nil {
 		return nil, err
 	}
@@ -27,7 +27,7 @@ func GetUserMapping()  (*UserMappingConfig, error) {
 }
 
 func GetGithubToken() (string, error){
-	bytes, err:=os.ReadFile(tokenFile)
+	bytes, err:=ioutil.ReadFile(tokenFile)
 	if err!=nil {
 		return "", err
 	}
